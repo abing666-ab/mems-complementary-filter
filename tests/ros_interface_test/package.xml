@@ -1,0 +1,32 @@
+<package format="2">
+	<name> mems_complementary_filter_ros </name>
+	<version> 1.0.0 </version>
+    <description> mems_complementary_filter_ros </description>
+	<author> a_ji </author>
+	<maintainer email="zhanghanyemail@gmail.com">a_ji</maintainer>
+	
+	<license>TODO</license>
+
+	<!-- wiki -->
+	<!-- <url type="website">http://xxxx</url> -->
+
+	<buildtool_depend>catkin</buildtool_depend>
+
+	<build_depend>roscpp</build_depend>
+	<build_depend>sensor_msgs</build_depend>
+	<build_depend>tf</build_depend>
+	<build_depend>tf_conversions</build_depend>
+	<build_depend>message_filters</build_depend>
+
+	<build_export_depend>roscpp</build_export_depend>
+	<build_export_depend>sensor_msgs</build_export_depend>
+	<build_export_depend>tf</build_export_depend>
+	<build_export_depend>tf_conversions</build_export_depend>
+
+	<exec_depend>roscpp</exec_depend>
+	<exec_depend>sensor_msgs</exec_depend>
+	<exec_depend>tf</exec_depend>
+	<exec_depend>tf_conversions</exec_depend>
+	<exec_depend>message_filters</exec_depend>
+
+</package>
