@@ -89,7 +89,7 @@ MemsComplementaryFilterROS::MemsComplementaryFilterROS(const ros::NodeHandle& _n
 }
 
 MemsComplementaryFilterROS::~MemsComplementaryFilterROS() {
-    filter_destory(p_filter_);
+    filter_destroy(p_filter_);
 }
 
 void MemsComplementaryFilterROS::ImportParameters() {

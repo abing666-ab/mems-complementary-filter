@@ -1,3 +1,4 @@
 .vscode/
 tests/ros_interface_test/build/
+tests/load_csv_test/build/
 build/

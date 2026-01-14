@@ -1,6 +1,6 @@
 #include "filter_implementary_helper.h"
 
-bool filter_destory(mems_complementary_filter_t* _filter) {
+bool filter_destroy(mems_complementary_filter_t* _filter) {
     delete _filter;
     _filter = nullptr;
     return true;

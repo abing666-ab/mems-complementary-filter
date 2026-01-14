@@ -68,7 +68,7 @@ typedef struct parameters {
 
 bool filter_create(const parameters_t* const _config, mems_complementary_filter_t** _filter);
 
-bool filter_destory(mems_complementary_filter_t* _filter);
+bool filter_destroy(mems_complementary_filter_t* _filter);
 
 bool filter_reset(const parameters_t* const _config, mems_complementary_filter_t* const _filter);
 

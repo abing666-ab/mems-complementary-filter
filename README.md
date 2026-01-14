@@ -97,9 +97,9 @@ typedef struct parameters {
 
 &nbsp;
 
-### filter_destory ###
+### filter_destroy ###
 ```c
-    bool filter_destory(mems_complementary_filter_t* _filter)
+    bool filter_destroy(mems_complementary_filter_t* _filter)
 ```
 + **Parameter:**
 
@@ -266,7 +266,7 @@ bool filter_add_imu_measurement(mems_complementary_filter_t* const _filter, cons
         .angular_velocity_threshold = 0.008f,
         .acceleration_threshold = 0.15f,
         .delta_angular_velocity_threshold = 0.005f,
-        .gain_acc = 0.002f,
+        .gain_acc = 0.0005f,
         .gain_mag = 0.002f,
         .bias_alpha = 0.002f,
         .default_gyro_bias = {gyro_bias.x, gyro_bias.y, gyro_bias.z},
