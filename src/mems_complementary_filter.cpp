@@ -100,6 +100,24 @@ bool MemsComplementaryFilter::GetOrientation(quaternion_t* const _quat) {
     return true;
 }
 
+bool MemsComplementaryFilter::GetBiases(filter_biases_t* const _biases) {
+    std::unique_lock<std::mutex> lock(mutex_);
+
+    if (_biases == nullptr) {
+        return false;
+    }
+    
+    _biases->timestamp = prev_time_;
+    _biases->bax = acc_bias_[0];
+    _biases->bay = acc_bias_[1];
+    _biases->baz = acc_bias_[2];
+    _biases->bwx = omega_bias_[0];
+    _biases->bwy = omega_bias_[1];
+    _biases->bwz = omega_bias_[2];
+
+    return true;
+}
+
 void MemsComplementaryFilter::SetInitialStates(const float* const _acceleration) {
     float acc_normalized[3] = {_acceleration[0], _acceleration[1], _acceleration[2]};
     normalization(3, acc_normalized);
@@ -334,7 +352,7 @@ void MemsComplementaryFilter::MagCorrection(const float* const _magnetic_field, 
 }
 
 void MemsComplementaryFilter::AdaptiveGain(const float _alpha, const float* const _acceleraton, float * const _adaptive_gain) {
-    constexpr float err_threshold1 = 0.1f, err_threshold2 = 0.2f;
+    constexpr float err_threshold1 = 0.008f, err_threshold2 = 0.015f;
     constexpr float a = 1.f / (err_threshold1 - err_threshold2);
     constexpr float b = 1.f - a * err_threshold1;
     const float acc_magnitude = std::sqrt(_acceleraton[0]*_acceleraton[0] + _acceleraton[1]*_acceleraton[1] + _acceleraton[2]*_acceleraton[2]);

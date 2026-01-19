@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.5)
+cmake_minimum_required(VERSION 3.5...3.28)
 project(load_csv_test)
 
 find_package(Eigen3 3.1.0 REQUIRED)

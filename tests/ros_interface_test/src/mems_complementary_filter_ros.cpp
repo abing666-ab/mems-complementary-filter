@@ -178,7 +178,8 @@ void MemsComplementaryFilterROS::IMUcallback(const sensor_msgs::Imu& _imu_data) 
     // std::cout << "update time used: " << time_used.count() << " s." << std::endl;
 
     quaternion_t quat;
-    if (filter_get_orientation(p_filter_, &quat)) {
+    ilter_biases_t biases;
+    if (filter_get_orientation(p_filter, &quat) && filter_get_biases(p_filter, &biases))  {
         PublishOrientation(_imu_data, quat);
         Eigen::Vector3f euler(0.f, 0.f, 0.f);
         quaternion_2_euler(&quat, euler);
@@ -243,12 +244,15 @@ void MemsComplementaryFilterROS::IMUmAGcallback(const ImuMsg::ConstPtr& _imu_msg
     }
 }
 
-void MemsComplementaryFilterROS::PublishOrientation(const sensor_msgs::Imu& _imu_data, const quaternion_t& _orientation) {
+void MemsComplementaryFilterROS::PublishOrientation(const sensor_msgs::Imu& _imu_data, const quaternion_t& _orientation, const filter_biases_t& _biases){
 	auto Qbw = Eigen::Quaternionf(_orientation.w, _orientation.x, _orientation.y, _orientation.z);
 	Qbw = Qbw * transform_.inverse();
 	auto qr = HamiltonToTFQuaternion(Qbw);
 	auto result = _imu_data;
     tf::quaternionTFToMsg(qr, result.orientation);
+
+    // TODO: use transform to convert biases into desired frame, and subscrube biases in resule.
+
     orientation_publisher_.publish(result);
 }
 

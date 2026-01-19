@@ -60,7 +60,7 @@ private:
     void ImportParameters();
     void IMUcallback(const sensor_msgs::Imu& _imu_data);
     void IMUmAGcallback(const ImuMsg::ConstPtr& _imu_msg_raw, const MagMsg::ConstPtr& _mag_msg);
-    void PublishOrientation(const sensor_msgs::Imu& _imu_data, const quaternion_t& _orientation);
+    void PublishOrientation(const sensor_msgs::Imu& _imu_data, const quaternion_t& _orientation, const filter_biases_t& _biases);
     void PublishStates();
     inline tf::Quaternion HamiltonToTFQuaternion(const quaternion_t& _orientation) const;
     inline tf::Quaternion HamiltonToTFQuaternion(const Eigen::Quaternionf& _orientation) const;

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.5)
+cmake_minimum_required(VERSION 3.5...3.28)
 project(mems_complementary_filter_ros)
 
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)

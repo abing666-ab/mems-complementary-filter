@@ -47,6 +47,18 @@ typedef struct quaternion {
     float w;              //  The w element of a quaternion.
 } quaternion_t;
 
+typedef struct {
+    //! In nanoseconds
+    int64_t timestamp;    
+
+    float bax;           //  The bias of acceleration in x-axis direction.
+    float bay;           //  The bias of acceleration in y-axis direction.
+    float baz;           //  The bias of acceleration in z-axis direction.
+    float bwx;           //  The bias of angular velocity around the x-axis.
+    float bwy;           //  The bias of angular velocity around the y-axis.
+    float bwz;           //  The bias of angular velocity around the z-axis.
+} filter_biases_t;
+
 /** \brief The struct of parameters. It will be used to initialize or reset the filter.
  */
 typedef struct parameters {
@@ -80,6 +92,8 @@ bool filter_add_measurement(mems_complementary_filter_t* const _filter,
                             const imu_sample_t* const _imu_sample, const mag_sample_t* const _mag_sample);
 
 bool filter_get_orientation(mems_complementary_filter_t* const _filter, quaternion_t* const _quat);
+
+bool filter_get_biases(mems_complementary_filter_t* const _filter, filter_biases_t* const _biases);
 
 #if defined(__cplusplus)
 }

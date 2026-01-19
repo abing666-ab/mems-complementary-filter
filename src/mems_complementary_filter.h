@@ -21,6 +21,8 @@ class MemsComplementaryFilter final : public mems_complementary_filter {
 
     bool GetOrientation(quaternion_t* const _quat) override;
 
+    bool GetBiases(filter_biases_t* const _biases) override;
+
   private:
     /** \brief Set the initial states of filter.
      *  \param[in] acceleraton Measurements of accelerometer.

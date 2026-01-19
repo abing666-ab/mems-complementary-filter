@@ -66,6 +66,12 @@ using SensorData = std::tuple<
 
 using FilterResult = std::tuple<
     int64_t,    // timestamp
+    float,      // wx
+    float,      // wy
+    float,      // wz
+    float,      // ax
+    float,      // ay
+    float,      // az
     float,      // qw
     float,      // qx
     float,      // qy
@@ -199,13 +205,20 @@ void writeFilterResultToCSV(const std::string& filename, const std::vector<Filte
     file << std::fixed << std::setprecision(8);
     
     // Write CSV header row
-    file << "timestamp,qw,qx,qy,qz,roll_deg,pitch_deg,yaw_deg\n";
+    file << "timestamp,wx,wy,wz,ax,ay,az,qw,qx,qy,qz,roll_deg,pitch_deg,yaw_deg\n";
     
     // Write data rows
     for (const auto& result : results) {
-        const auto& [timestamp, qw, qx, qy, qz, roll_deg, pitch_deg, yaw_deg] = result;
+        const auto& [timestamp, wx, wy, wz, ax, ay, az,
+                     qw, qx, qy, qz, roll_deg, pitch_deg, yaw_deg] = result;
         
         file << timestamp << ","
+             << wx << ","
+             << wy << ","
+             << wz << ","
+             << ax << ","
+             << ay << ","
+             << az << ","
              << qw << ","
              << qx << ","
              << qy << ","
@@ -298,7 +311,7 @@ int main() {
         .angular_velocity_threshold = 0.008f,
         .acceleration_threshold = 0.15f,
         .delta_angular_velocity_threshold = 0.005f,
-        .gain_acc = 0.0005f,
+        .gain_acc = 0.0002f,
         .gain_mag = 0.002f,
         .bias_alpha = 0.002f,
         // .default_gyro_bias = {0.00236651, -0.00196377, -4.22027e-05},
@@ -318,14 +331,21 @@ int main() {
     int64_t last_ts = 0;
     for (const auto& [timestamp, wx, wy, wz, ax, ay, az, 
                     qw, qx, qy, qz, roll_deg, pitch_deg, yaw_deg] : data) {
+        const float&& fax = static_cast<float>(ax);
+        const float&& fay = static_cast<float>(ay);
+        const float&& faz = static_cast<float>(az);
+        const float&& fwx = static_cast<float>(wx);
+        const float&& fwy = static_cast<float>(wy);
+        const float&& fwz = static_cast<float>(wz);
+
         const imu_sample_t measurements {
             .timestamp = timestamp,
-            .ax = static_cast<float>(ax),
-            .ay = static_cast<float>(ay),
-            .az = static_cast<float>(az),
-            .wx = static_cast<float>(wx),
-            .wy = static_cast<float>(wy),
-            .wz = static_cast<float>(wz)
+            .ax = fax,
+            .ay = fay,
+            .az = faz,
+            .wx = fwx,
+            .wy = fwy,
+            .wz = fwz
         };
 
         // std::chrono::steady_clock::time_point ts = std::chrono::steady_clock::now();
@@ -335,12 +355,13 @@ int main() {
         // std::cout << "update time used: " << time_used.count() << " s." << std::endl;
 
         quaternion_t quat;
+        filter_biases_t biases;
         Eigen::Vector3f euler(0.f, 0.f, 0.f);
-        if (filter_get_orientation(p_filter, &quat)) {
+        if (filter_get_orientation(p_filter, &quat) && filter_get_biases(p_filter, &biases)) {
             quaternion_2_euler(&quat, euler);
-            // std::cout << "get e: " << euler[0] << " " << euler[1] << " " << euler[2] << std::endl;
             euler *= 57.3f;  // Convert radians to degrees
             result.emplace_back(std::forward_as_tuple(quat.timestamp,
+                fwx - biases.bwx, fwy - biases.bwy, fwz - biases.bwz, fax, fay, faz,
                 quat.w, quat.x, quat.y, quat.z, euler[0], euler[1], euler[2]));
         }
 
@@ -367,11 +388,12 @@ int main() {
         // Output first few filter results as example
         std::cout << "\nFirst 3 filter results:" << std::endl;
         for (int i = 0; i < std::min(3, static_cast<int>(result.size())); ++i) {
-            const auto& [timestamp, qw, qx, qy, qz, roll_deg, pitch_deg, yaw_deg] = result[i];
+            const auto& [timestamp, wx, wy, wz, ax, ay, az,
+                         qw, qx, qy, qz, roll_deg, pitch_deg, yaw_deg] = result[i];
             std::cout << "Result " << i + 1 << ":" << std::endl;
-            std::cout << "  Timestamp: " << timestamp << std::endl;
-            std::cout << "  Quaternion: (" << qw << ", " << qx << ", " << qy << ", " << qz << ")" << std::endl;
-            std::cout << "  Euler Angles (deg): (" << roll_deg << ", " << pitch_deg << ", " << yaw_deg << ")" << std::endl;
+            std::cout << "Timestamp: " << timestamp << std::endl;
+            std::cout << "Quaternion: (" << qw << ", " << qx << ", " << qy << ", " << qz << ")" << std::endl;
+            std::cout << "Euler Angles (deg): (" << roll_deg << ", " << pitch_deg << ", " << yaw_deg << ")" << std::endl;
         }
     }
     

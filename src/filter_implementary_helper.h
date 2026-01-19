@@ -16,6 +16,7 @@ struct mems_complementary_filter {
     virtual bool AddMeasurement(const imu_sample_t* const _imu_sample, const mag_sample_t* const _mag_sample) = 0;
 
     virtual bool GetOrientation(quaternion_t* const _quat) = 0;
+    virtual bool GetBiases(filter_biases_t* const _biases) = 0;
 };
 
 #if defined(__cplusplus)

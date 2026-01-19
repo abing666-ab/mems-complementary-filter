@@ -26,3 +26,7 @@ bool filter_add_measurement(mems_complementary_filter_t* const _filter,
 bool filter_get_orientation(mems_complementary_filter_t* const _filter, quaternion_t* const _quat) {
     return _filter->GetOrientation(_quat);
 }
+
+bool filter_get_biases(mems_complementary_filter_t* const _filter, filter_biases_t* const _biases) {
+    return _filter->GetBiases(_biases);
+}
